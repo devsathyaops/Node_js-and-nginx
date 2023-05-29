@@ -1,0 +1,46 @@
+server {
+
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/sathyaops.online/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/sathyaops.online/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+        server_name sathyaops.online;
+location ~ ^/(node|hello) {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+#       location /node {
+#                   proxy_pass http://localhost:3000;
+#                  proxy_set_header   Host $http_host;
+#                  proxy_set_header   X-Real-IP $remote_addr;
+#                  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+#                  proxy_set_header   X-Forwarded-Proto $scheme;
+#       }
+
+#       location /hello {
+#                   proxy_pass http://localhost:3001;
+#                  proxy_set_header   Host $http_host;
+#                  proxy_set_header   X-Real-IP $remote_addr;
+#                  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+#                  proxy_set_header   X-Forwarded-Proto $scheme;
+#       }
+#}
+}
+
+server {
+    if ($host = sathyaops.online) {
+        return 301 https://$host$request_uri;
+    }
+
+
+        listen 80 default_server;
+
+        server_name sathyaops.online;
+    return 404;
+
+
+}
